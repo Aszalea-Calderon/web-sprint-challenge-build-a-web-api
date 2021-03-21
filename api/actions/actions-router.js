@@ -32,7 +32,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// - `[POST] /api/actions` returns the newly created action as the body of the _response_. (C in CRUD -- Creating)
+// - `[POST]  (C in CRUD -- Creating)
 //NOTE-- This required a project id, description, notes, and completed or not
 router.post("/", async (req, res) => {
   try {
@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: err, message: err.message, status: 500 });
   }
 });
-// - `[PUT] /api/actions/:id` returns the updated action as the body of the _response_. (U of Crud) -- Update
+// - `[PUT] (U of Crud) -- Update
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
@@ -65,7 +65,7 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ error: err, message: err.message, status: 500 });
   }
 });
-// - `[DELETE] /api/actions/:id` returns no _response_ body.
+// - `[DELETE]  (D in CRUD)-- Delete
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
