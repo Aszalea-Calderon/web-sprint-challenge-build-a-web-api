@@ -24,12 +24,25 @@ async function checkID(req, res, next) {
 }
 
 async function checkDatFunctionBody(req, res, next) {
-  if (!req.body || !req.body.name || !req.body.description) {
-    res
-      .status(400)
-      .json({ message: "Both name and description are required strings" });
-  } else {
-    next();
+  const body = req.body;
+  try {
+    if (body && Object.keys(body).length === 0) {
+      next({
+        message:
+          "missing actions data. Please provide project_id, description and notes",
+        status: 400,
+      });
+    } else if (!body.project_id) {
+      next({ message: "missing project id", status: 400 });
+    } else if (!body.description) {
+      next({ message: "missing action description", status: 400 });
+    } else if (!body.notes) {
+      next({ message: "missing action notes", status: 400 });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next({ message: err.message, status: 500 });
   }
 }
 //ACTIONS
@@ -57,16 +70,16 @@ router.get("/:id", checkID, (req, res) => {
 //NOTE-- This required a project id, description, notes, and completed or not
 router.post("/", checkDatFunctionBody, async (req, res) => {
   try {
-    const newAction = await Action.insert(req.body);
-    if (newAction) {
-      res.status(200).json(newAction);
+    const newProject = await Action.insert(req.body);
+    if (newProject) {
+      res.status(201).json(newProject);
     } else {
       res.status(400).json({
-        message: `Unable to create action.`,
+        message: "Unable to create project",
       });
     }
   } catch (err) {
-    console.log(err, "error");
+    res.status(500).json({ error: err, message: err.message, status: 500 });
   }
 });
 // - `[PUT] (U of Crud) -- Update
