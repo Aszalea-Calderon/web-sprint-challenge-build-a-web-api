@@ -22,6 +22,16 @@ async function checkID(req, res, next) {
     }
   }
 }
+
+async function checkDatFunctionBody(req, res, next) {
+  if (!req.body || !req.body.name || !req.body.description) {
+    res
+      .status(400)
+      .json({ message: "Both name and description are required strings" });
+  } else {
+    next();
+  }
+}
 //ACTIONS
 // - `[GET] /api/actions`(R in CRUD-- reading)
 
@@ -35,7 +45,6 @@ router.get("/", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err, message: err.message });
   }
 });
 
@@ -46,18 +55,18 @@ router.get("/:id", checkID, (req, res) => {
 
 // - `[POST]  (C in CRUD -- Creating)
 //NOTE-- This required a project id, description, notes, and completed or not
-router.post("/", async (req, res) => {
+router.post("/", checkDatFunctionBody, async (req, res) => {
   try {
     const newAction = await Action.insert(req.body);
     if (newAction) {
-      res.status(201).json(newAction);
+      res.status(200).json(newAction);
     } else {
       res.status(400).json({
-        message: "Unable to create action",
+        message: `Unable to create action.`,
       });
     }
   } catch (err) {
-    res.status(500).json({ error: err, message: err.message, status: 500 });
+    console.log(err, "error");
   }
 });
 // - `[PUT] (U of Crud) -- Update
