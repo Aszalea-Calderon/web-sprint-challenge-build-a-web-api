@@ -84,19 +84,14 @@ router.post("/", checkDatFunctionBody, async (req, res) => {
 });
 // - `[PUT] (U of Crud) -- Update
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", checkID, checkDatFunctionBody, async (req, res, next) => {
   const { id } = req.params;
-  const act = req.body;
+  const changes = req.body;
   try {
-    const updateAction = await Action.update(id, act);
-    if (updateAction) {
-      res.status(200).json(updateAction);
-    } else {
-      res.status(404).json({ message: "That id doesn't exist" });
-    }
+    const updatedAction = await Action.update(id, changes);
+    res.status(200).json(updatedAction);
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: err, message: err.message, status: 500 });
+    next({ error: err, message: err.message, status: 500 });
   }
 });
 // - `[DELETE]  (D in CRUD)-- Delete
