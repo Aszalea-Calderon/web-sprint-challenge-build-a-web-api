@@ -18,7 +18,7 @@ async function checkID(req, res, next) {
         next({ message: `${id} is not a valid id`, status: 404 });
       }
     } catch (err) {
-      next({ error: err, message: err.message, status: 500 });
+      next({ error: err, status: 500 });
     }
   }
 }
@@ -42,7 +42,7 @@ async function checkDatFunctionBody(req, res, next) {
       next();
     }
   } catch (err) {
-    next({ message: err.message, status: 500 });
+    next({ message: err, status: 500 });
   }
 }
 //ACTIONS
@@ -79,7 +79,7 @@ router.post("/", checkDatFunctionBody, async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).json({ error: err, message: err.message, status: 500 });
+    res.status(500).json({ error: err, status: 500 });
   }
 });
 // - `[PUT] (U of Crud) -- Update
@@ -91,7 +91,7 @@ router.put("/:id", checkID, checkDatFunctionBody, async (req, res, next) => {
     const updatedAction = await Action.update(id, changes);
     res.status(200).json(updatedAction);
   } catch (err) {
-    next({ error: err, message: err.message, status: 500 });
+    next({ error: err, status: 500 });
   }
 });
 // - `[DELETE]  (D in CRUD)-- Delete
@@ -102,7 +102,7 @@ router.delete("/:id", async (req, res) => {
     res.status(204).json(deleteAction);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: err, message: err.message, status: 500 });
+    res.status(500).json({ error: err, status: 500 });
   }
 });
 
